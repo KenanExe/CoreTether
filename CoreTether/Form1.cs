@@ -23,6 +23,11 @@ namespace CoreTether
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Hide();
+            notifyIcon1.Text = "Sistem Info\n" +
+                               "Ram %\n" +
+                               "Cpu %\n" +
+                               "Wifi Mbps";
+            bool status = SshNetService.ConnectSsh("test.rebex.net","demo","password");
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
