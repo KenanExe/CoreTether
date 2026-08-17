@@ -23,11 +23,18 @@ namespace CoreTether
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Hide();
+            var values = new SshNetService();
+            SshNetService.SetSshCredentials("test.rebex.net", "demo", "password");
+
+            values.GetValues();
+
             notifyIcon1.Text = "Sistem Info\n" +
-                               "Ram %\n" +
-                               "Cpu %\n" +
-                               "Wifi Mbps";
-            bool status = SshNetService.ConnectSsh("test.rebex.net","demo","password");
+                               "Cpu  "+ values.Cpu  +"%\n"  +
+                               "Ram  "+ values.Ram  +"%\n"  +
+                               "Disc "+ values.Disc +"%\n"  +
+                               "Wifi "+ values.Wifi +"%";
+            //ToDo: Add a timer to update the values every 5 seconds
+            bool status = SshNetService.ConnectSsh();
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
