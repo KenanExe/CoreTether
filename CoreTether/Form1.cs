@@ -1,3 +1,4 @@
+using Timer = System.Windows.Forms.Timer;
 namespace CoreTether
 {
     public partial class Form1 : Form
@@ -23,18 +24,33 @@ namespace CoreTether
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Hide();
+            Timer timer = new Timer();
             var values = new SshNetService();
-            SshNetService.SetSshCredentials("test.rebex.net", "demo", "password");
+            //SshNetService.SetSshCredentials("test.rebex.net", "demo", "password");
+            timer.Interval = 1000;
+            timer.Tick += Timer_Tick;
+            timer.Start();
 
+            bool status = SshNetService.ConnectSsh();
+        }
+        private void Timer_Tick(object Sender, EventArgs e)
+        {
+            var values = new SshNetService();
             values.GetValues();
 
             notifyIcon1.Text = "Sistem Info\n" +
-                               "Cpu  "+ values.Cpu  +"%\n"  +
-                               "Ram  "+ values.Ram  +"%\n"  +
-                               "Disc "+ values.Disc +"%\n"  +
-                               "Wifi "+ values.Wifi +"%";
-            //ToDo: Add a timer to update the values every 5 seconds
-            bool status = SshNetService.ConnectSsh();
+                               "Cpu  " + values.Cpu + "%\n" +
+                               "Ram  " + values.Ram + "%\n" +
+                               "Disc " + values.Disc + "%\n" +
+                               "Wifi " + values.Wifi + "%";
+            /*
+            Console.Clear();
+            Console.WriteLine("Sistem Info");
+            Console.WriteLine("Cpu: " + values.Cpu + "%");
+            Console.WriteLine("Ram: " + values.Ram + "%");
+            Console.WriteLine("Disc: " + values.Disc + "%");
+            Console.WriteLine("Wifi: " + values.Wifi + "%");
+            */
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {

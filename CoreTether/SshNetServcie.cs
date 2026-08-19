@@ -148,12 +148,11 @@ namespace CoreTether
             else
             {
                 SetValues(
-                ParseValue(RunSshCommand("LANG=C top -bn1 | grep \"Cpu(s)\" | awk '{print 100 - $8}'")), // This command work abnormally.
-                ParseValue(RunSshCommand("free | grep Mem | awk '{print int($3/$2 * 100)}'")),
-                ParseValue(RunSshCommand("df / | tail -1 | awk '{print $5}' | tr -d '%'")),
-                ParseValue(RunSshCommand("awk 'NR==3 {print int($3*100/70)}' /proc/net/wireless"))
-                //I will change this command to more optimized one in the future, but for now it works fine.
-            );
+                    ParseValue(RunSshCommand("top -bn2 -d 1 | grep \"Cpu(s)\" | tail -1 | awk -F'id,' '{split($1,a,\",\"); v=a[length(a)]; gsub(/[^0-9.]/,\"\",v); print 100-v}'")),
+                    ParseValue(RunSshCommand("free | grep Mem | awk '{print int($3/$2 * 100)}'")),
+                    ParseValue(RunSshCommand("df / | tail -1 | awk '{print $5}' | tr -d '%'")),
+                    ParseValue(RunSshCommand("nmcli -t -f active,signal dev wifi | grep '^yes:' | cut -d: -f2"))
+                );
             }
         }
         private float ParseValue(string raw)
