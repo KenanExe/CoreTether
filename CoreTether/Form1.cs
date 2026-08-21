@@ -30,7 +30,7 @@ namespace CoreTether
             timer.Interval = 1000;
             timer.Tick += Timer_Tick;
             timer.Start();
-
+            //ToDo: Make this async
             bool status = SshNetService.ConnectSsh();
         }
         private void Timer_Tick(object Sender, EventArgs e)
@@ -38,7 +38,7 @@ namespace CoreTether
             var values = new SshNetService();
             values.GetValues();
 
-            notifyIcon1.Text = "Sistem Info\n" +
+            sysTrayIcon.Text = "Sistem Info\n" +
                                "Cpu  " + values.Cpu + "%\n" +
                                "Ram  " + values.Ram + "%\n" +
                                "Disc " + values.Disc + "%\n" +
@@ -60,5 +60,6 @@ namespace CoreTether
                 this.Hide();
             }
         }
+
     }
 }

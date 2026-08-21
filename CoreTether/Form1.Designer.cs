@@ -30,27 +30,58 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            notifyIcon1 = new NotifyIcon(components);
-            contextMenuStrip = new ContextMenuStrip(components);
+            sysTrayIcon = new NotifyIcon(components);
+            trayContextMenuStrip = new ContextMenuStrip(components);
             exitToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
-            button1 = new Button();
-            contextMenuStrip.SuspendLayout();
+            grpServerProfiles = new GroupBox();
+            btnConnect = new Button();
+            btnClear = new Button();
+            txtPassword = new TextBox();
+            lblPassword = new Label();
+            txtUserName = new TextBox();
+            lblUserName = new Label();
+            lblIPAdress = new Label();
+            txtIPAddress = new TextBox();
+            grpWatchingSettings = new GroupBox();
+            chkCpuLoad = new CheckBox();
+            chkRamUsage = new CheckBox();
+            lblCalues = new Label();
+            chkDiskUsage = new CheckBox();
+            lblCheckFewquency = new Label();
+            tbWatchInterval = new TrackBar();
+            chkCpuTemperature = new CheckBox();
+            grpCriticalAlert = new GroupBox();
+            tbAlertRamUsage = new TrackBar();
+            tbAlertCpuUsage = new TrackBar();
+            chkAlertRamUsage = new CheckBox();
+            chkAlertTemperature = new CheckBox();
+            tbAlertTemperature = new TrackBar();
+            chkAlertCpuUsage = new CheckBox();
+            statusStrip = new StatusStrip();
+            trayContextMenuStrip.SuspendLayout();
+            grpServerProfiles.SuspendLayout();
+            grpWatchingSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)tbWatchInterval).BeginInit();
+            grpCriticalAlert.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)tbAlertRamUsage).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)tbAlertCpuUsage).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)tbAlertTemperature).BeginInit();
             SuspendLayout();
             // 
-            // notifyIcon1
+            // sysTrayIcon
             // 
-            notifyIcon1.ContextMenuStrip = contextMenuStrip;
-            notifyIcon1.Icon = (Icon)resources.GetObject("notifyIcon1.Icon");
-            notifyIcon1.Text = "notifyIcon1";
-            notifyIcon1.Visible = true;
+            sysTrayIcon.ContextMenuStrip = trayContextMenuStrip;
+            sysTrayIcon.Icon = (Icon)resources.GetObject("sysTrayIcon.Icon");
+            sysTrayIcon.Text = "CoreTether";
+            sysTrayIcon.Visible = true;
             // 
-            // contextMenuStrip
+            // trayContextMenuStrip
             // 
-            contextMenuStrip.ImageScalingSize = new Size(20, 20);
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { exitToolStripMenuItem, settingsToolStripMenuItem });
-            contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new Size(132, 52);
+            trayContextMenuStrip.ImageScalingSize = new Size(20, 20);
+            trayContextMenuStrip.Items.AddRange(new ToolStripItem[] { exitToolStripMenuItem, settingsToolStripMenuItem });
+            trayContextMenuStrip.Name = "trayContextMenuStrip";
+            trayContextMenuStrip.Size = new Size(132, 52);
             // 
             // exitToolStripMenuItem
             // 
@@ -66,37 +97,305 @@
             settingsToolStripMenuItem.Text = "Settings";
             settingsToolStripMenuItem.Click += settingsToolStripMenuItem_Click;
             // 
-            // button1
+            // grpServerProfiles
             // 
-            button1.Location = new Point(317, 145);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 1;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
+            grpServerProfiles.Controls.Add(btnConnect);
+            grpServerProfiles.Controls.Add(btnClear);
+            grpServerProfiles.Controls.Add(txtPassword);
+            grpServerProfiles.Controls.Add(lblPassword);
+            grpServerProfiles.Controls.Add(txtUserName);
+            grpServerProfiles.Controls.Add(lblUserName);
+            grpServerProfiles.Controls.Add(lblIPAdress);
+            grpServerProfiles.Controls.Add(txtIPAddress);
+            grpServerProfiles.Location = new Point(12, 12);
+            grpServerProfiles.Name = "grpServerProfiles";
+            grpServerProfiles.Size = new Size(250, 299);
+            grpServerProfiles.TabIndex = 1;
+            grpServerProfiles.TabStop = false;
+            grpServerProfiles.Text = "Server Profiles";
+            // 
+            // btnConnect
+            // 
+            btnConnect.Location = new Point(134, 155);
+            btnConnect.Name = "btnConnect";
+            btnConnect.Size = new Size(110, 29);
+            btnConnect.TabIndex = 10;
+            btnConnect.Text = "Connect";
+            btnConnect.UseVisualStyleBackColor = true;
+            // 
+            // btnClear
+            // 
+            btnClear.Location = new Point(6, 155);
+            btnClear.Name = "btnClear";
+            btnClear.Size = new Size(110, 29);
+            btnClear.TabIndex = 9;
+            btnClear.Text = "Clear";
+            btnClear.UseVisualStyleBackColor = true;
+            // 
+            // txtPassword
+            // 
+            txtPassword.Location = new Point(97, 115);
+            txtPassword.Name = "txtPassword";
+            txtPassword.Size = new Size(147, 27);
+            txtPassword.TabIndex = 8;
+            // 
+            // lblPassword
+            // 
+            lblPassword.AutoSize = true;
+            lblPassword.Location = new Point(6, 118);
+            lblPassword.Name = "lblPassword";
+            lblPassword.Size = new Size(73, 20);
+            lblPassword.TabIndex = 4;
+            lblPassword.Text = "Password:";
+            // 
+            // txtUserName
+            // 
+            txtUserName.Location = new Point(97, 77);
+            txtUserName.Name = "txtUserName";
+            txtUserName.Size = new Size(147, 27);
+            txtUserName.TabIndex = 7;
+            // 
+            // lblUserName
+            // 
+            lblUserName.AutoSize = true;
+            lblUserName.Location = new Point(6, 80);
+            lblUserName.Name = "lblUserName";
+            lblUserName.Size = new Size(85, 20);
+            lblUserName.TabIndex = 3;
+            lblUserName.Text = "User Name:";
+            // 
+            // lblIPAdress
+            // 
+            lblIPAdress.AutoSize = true;
+            lblIPAdress.Location = new Point(6, 42);
+            lblIPAdress.Name = "lblIPAdress";
+            lblIPAdress.Size = new Size(72, 20);
+            lblIPAdress.TabIndex = 2;
+            lblIPAdress.Text = "IP Adress:";
+            // 
+            // txtIPAddress
+            // 
+            txtIPAddress.Location = new Point(97, 39);
+            txtIPAddress.Name = "txtIPAddress";
+            txtIPAddress.Size = new Size(147, 27);
+            txtIPAddress.TabIndex = 6;
+            // 
+            // grpWatchingSettings
+            // 
+            grpWatchingSettings.Controls.Add(chkCpuLoad);
+            grpWatchingSettings.Controls.Add(chkRamUsage);
+            grpWatchingSettings.Controls.Add(lblCalues);
+            grpWatchingSettings.Controls.Add(chkDiskUsage);
+            grpWatchingSettings.Controls.Add(lblCheckFewquency);
+            grpWatchingSettings.Controls.Add(tbWatchInterval);
+            grpWatchingSettings.Controls.Add(chkCpuTemperature);
+            grpWatchingSettings.Location = new Point(268, 12);
+            grpWatchingSettings.Name = "grpWatchingSettings";
+            grpWatchingSettings.Size = new Size(250, 299);
+            grpWatchingSettings.TabIndex = 2;
+            grpWatchingSettings.TabStop = false;
+            grpWatchingSettings.Text = "Watching Settings";
+            // 
+            // chkCpuLoad
+            // 
+            chkCpuLoad.AutoSize = true;
+            chkCpuLoad.Location = new Point(6, 148);
+            chkCpuLoad.Name = "chkCpuLoad";
+            chkCpuLoad.Size = new Size(125, 24);
+            chkCpuLoad.TabIndex = 3;
+            chkCpuLoad.Text = "Cpur Load (%)";
+            chkCpuLoad.UseVisualStyleBackColor = true;
+            // 
+            // chkRamUsage
+            // 
+            chkRamUsage.AutoSize = true;
+            chkRamUsage.Location = new Point(6, 178);
+            chkRamUsage.Name = "chkRamUsage";
+            chkRamUsage.Size = new Size(142, 24);
+            chkRamUsage.TabIndex = 4;
+            chkRamUsage.Text = "Ram Usage (MB)";
+            chkRamUsage.UseVisualStyleBackColor = true;
+            // 
+            // lblCalues
+            // 
+            lblCalues.AutoSize = true;
+            lblCalues.Location = new Point(6, 113);
+            lblCalues.Name = "lblCalues";
+            lblCalues.Size = new Size(130, 20);
+            lblCalues.TabIndex = 2;
+            lblCalues.Text = "Calues to Monitor:";
+            // 
+            // chkDiskUsage
+            // 
+            chkDiskUsage.AutoSize = true;
+            chkDiskUsage.Location = new Point(6, 238);
+            chkDiskUsage.Name = "chkDiskUsage";
+            chkDiskUsage.Size = new Size(130, 24);
+            chkDiskUsage.TabIndex = 6;
+            chkDiskUsage.Text = "Disk Usage (%)";
+            chkDiskUsage.UseVisualStyleBackColor = true;
+            // 
+            // lblCheckFewquency
+            // 
+            lblCheckFewquency.AutoSize = true;
+            lblCheckFewquency.Location = new Point(6, 33);
+            lblCheckFewquency.Name = "lblCheckFewquency";
+            lblCheckFewquency.Size = new Size(212, 20);
+            lblCheckFewquency.TabIndex = 1;
+            lblCheckFewquency.Text = "Check Fewquency (Speeds): [0]";
+            // 
+            // tbWatchInterval
+            // 
+            tbWatchInterval.Location = new Point(6, 61);
+            tbWatchInterval.Name = "tbWatchInterval";
+            tbWatchInterval.Size = new Size(238, 56);
+            tbWatchInterval.TabIndex = 0;
+            // 
+            // chkCpuTemperature
+            // 
+            chkCpuTemperature.AutoSize = true;
+            chkCpuTemperature.Location = new Point(6, 208);
+            chkCpuTemperature.Name = "chkCpuTemperature";
+            chkCpuTemperature.Size = new Size(168, 24);
+            chkCpuTemperature.TabIndex = 5;
+            chkCpuTemperature.Text = "Cpu Temperature (C)";
+            chkCpuTemperature.UseVisualStyleBackColor = true;
+            // 
+            // grpCriticalAlert
+            // 
+            grpCriticalAlert.Controls.Add(tbAlertRamUsage);
+            grpCriticalAlert.Controls.Add(tbAlertCpuUsage);
+            grpCriticalAlert.Controls.Add(chkAlertRamUsage);
+            grpCriticalAlert.Controls.Add(chkAlertTemperature);
+            grpCriticalAlert.Controls.Add(tbAlertTemperature);
+            grpCriticalAlert.Controls.Add(chkAlertCpuUsage);
+            grpCriticalAlert.Location = new Point(524, 12);
+            grpCriticalAlert.Name = "grpCriticalAlert";
+            grpCriticalAlert.Size = new Size(250, 299);
+            grpCriticalAlert.TabIndex = 3;
+            grpCriticalAlert.TabStop = false;
+            grpCriticalAlert.Text = "Critical Alert Thresholds";
+            // 
+            // tbAlertRamUsage
+            // 
+            tbAlertRamUsage.Location = new Point(6, 235);
+            tbAlertRamUsage.Name = "tbAlertRamUsage";
+            tbAlertRamUsage.Size = new Size(238, 56);
+            tbAlertRamUsage.TabIndex = 5;
+            // 
+            // tbAlertCpuUsage
+            // 
+            tbAlertCpuUsage.Location = new Point(6, 146);
+            tbAlertCpuUsage.Name = "tbAlertCpuUsage";
+            tbAlertCpuUsage.Size = new Size(238, 56);
+            tbAlertCpuUsage.TabIndex = 4;
+            // 
+            // chkAlertRamUsage
+            // 
+            chkAlertRamUsage.AutoSize = true;
+            chkAlertRamUsage.Location = new Point(6, 205);
+            chkAlertRamUsage.Name = "chkAlertRamUsage";
+            chkAlertRamUsage.Size = new Size(207, 24);
+            chkAlertRamUsage.TabIndex = 2;
+            chkAlertRamUsage.Text = "Critical Ram Usage (%): [0]";
+            chkAlertRamUsage.UseVisualStyleBackColor = true;
+            // 
+            // chkAlertTemperature
+            // 
+            chkAlertTemperature.AutoSize = true;
+            chkAlertTemperature.Location = new Point(6, 33);
+            chkAlertTemperature.Name = "chkAlertTemperature";
+            chkAlertTemperature.Size = new Size(213, 24);
+            chkAlertTemperature.TabIndex = 0;
+            chkAlertTemperature.Text = "Critical Temperature (C): [0]";
+            chkAlertTemperature.UseVisualStyleBackColor = true;
+            // 
+            // tbAlertTemperature
+            // 
+            tbAlertTemperature.Location = new Point(6, 63);
+            tbAlertTemperature.Name = "tbAlertTemperature";
+            tbAlertTemperature.Size = new Size(238, 56);
+            tbAlertTemperature.TabIndex = 3;
+            // 
+            // chkAlertCpuUsage
+            // 
+            chkAlertCpuUsage.AutoSize = true;
+            chkAlertCpuUsage.Location = new Point(6, 116);
+            chkAlertCpuUsage.Name = "chkAlertCpuUsage";
+            chkAlertCpuUsage.Size = new Size(203, 24);
+            chkAlertCpuUsage.TabIndex = 1;
+            chkAlertCpuUsage.Text = "Critical Cpu Usage (%): [0]";
+            chkAlertCpuUsage.UseVisualStyleBackColor = true;
+            // 
+            // statusStrip
+            // 
+            statusStrip.ImageScalingSize = new Size(20, 20);
+            statusStrip.Location = new Point(0, 319);
+            statusStrip.Name = "statusStrip";
+            statusStrip.Size = new Size(782, 22);
+            statusStrip.TabIndex = 4;
+            statusStrip.Text = "Ready";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(button1);
+            ClientSize = new Size(782, 341);
+            Controls.Add(statusStrip);
+            Controls.Add(grpCriticalAlert);
+            Controls.Add(grpWatchingSettings);
+            Controls.Add(grpServerProfiles);
             Name = "Form1";
             ShowInTaskbar = false;
-            Text = "Form1";
+            Text = "CoreTether";
             WindowState = FormWindowState.Minimized;
             FormClosing += Form1_FormClosing;
             Load += Form1_Load;
-            contextMenuStrip.ResumeLayout(false);
+            trayContextMenuStrip.ResumeLayout(false);
+            grpServerProfiles.ResumeLayout(false);
+            grpServerProfiles.PerformLayout();
+            grpWatchingSettings.ResumeLayout(false);
+            grpWatchingSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)tbWatchInterval).EndInit();
+            grpCriticalAlert.ResumeLayout(false);
+            grpCriticalAlert.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)tbAlertRamUsage).EndInit();
+            ((System.ComponentModel.ISupportInitialize)tbAlertCpuUsage).EndInit();
+            ((System.ComponentModel.ISupportInitialize)tbAlertTemperature).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private NotifyIcon notifyIcon1;
-        private ContextMenuStrip contextMenuStrip;
+        private NotifyIcon sysTrayIcon;
+        private ContextMenuStrip trayContextMenuStrip;
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripMenuItem settingsToolStripMenuItem;
-        private Button button1;
+        private GroupBox grpServerProfiles;
+        private Label lblPassword;
+        private Label lblUserName;
+        private Label lblIPAdress;
+        private GroupBox grpWatchingSettings;
+        private GroupBox grpCriticalAlert;
+        private TextBox txtPassword;
+        private TextBox txtUserName;
+        private TextBox txtIPAddress;
+        private Button btnConnect;
+        private Button btnClear;
+        private CheckBox chkCpuLoad;
+        private CheckBox chkRamUsage;
+        private Label lblCalues;
+        private CheckBox chkDiskUsage;
+        private Label lblCheckFewquency;
+        private TrackBar tbWatchInterval;
+        private CheckBox chkCpuTemperature;
+        private TrackBar tbAlertRamUsage;
+        private TrackBar tbAlertCpuUsage;
+        private CheckBox chkAlertRamUsage;
+        private CheckBox chkAlertTemperature;
+        private TrackBar tbAlertTemperature;
+        private CheckBox chkAlertCpuUsage;
+        private StatusStrip statusStrip;
     }
 }
