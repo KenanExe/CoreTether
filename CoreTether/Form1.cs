@@ -20,38 +20,69 @@ namespace CoreTether
         {
             Application.Exit();
         }
-
-        private void Form1_Load(object sender, EventArgs e)
+        private Timer timer;
+        private async void Form1_Load(object sender, EventArgs e)
         {
             this.Hide();
-            Timer timer = new Timer();
-            var values = new SshNetService();
-            //SshNetService.SetSshCredentials("test.rebex.net", "demo", "password");
-            timer.Interval = 1000;
+            timer = new Timer();
+            SshNetService.SetSshCredentials("test.rebex.net", "demo", "password");
+            for (int i = 0; i < 4; i++)
+                statusStrip.Items.Add("loading");
+            timer.Interval = CheckFrequency*1000; // ToDo: fix this later, make it dynamic
             timer.Tick += Timer_Tick;
             timer.Start();
-            //ToDo: Make this async
-            bool status = SshNetService.ConnectSsh();
+            bool status = await SshNetService.ConnectSsh();
         }
-        private void Timer_Tick(object Sender, EventArgs e)
+        private async void Timer_Tick(object Sender, EventArgs e)
         {
-            var values = new SshNetService();
-            values.GetValues();
+            timer.Stop();
+            try
+            {
+                await SshNetService.GetValues();
+                await WarningSystem.CheckWarningsAsync();
 
-            sysTrayIcon.Text = "Sistem Info\n" +
-                               "Cpu  " + values.Cpu + "%\n" +
-                               "Ram  " + values.Ram + "%\n" +
-                               "Disc " + values.Disc + "%\n" +
-                               "Wifi " + values.Wifi + "%";
-            /*
-            Console.Clear();
-            Console.WriteLine("Sistem Info");
-            Console.WriteLine("Cpu: " + values.Cpu + "%");
-            Console.WriteLine("Ram: " + values.Ram + "%");
-            Console.WriteLine("Disc: " + values.Disc + "%");
-            Console.WriteLine("Wifi: " + values.Wifi + "%");
-            */
+                sysTrayIcon.Text = "Sistem Info\n" +
+                                   "Cpu  " + SshNetService.Cpu + "%\n" +
+                                   "Ram  " + SshNetService.Ram + "%\n" +
+                                   "Disc " + SshNetService.Disc + "%\n" +
+                                   "Wifi " + SshNetService.Wifi + "%";
+
+                #region system info console output
+                /*
+                Console.Clear();
+                Console.WriteLine("Sistem Info");
+                Console.WriteLine("Cpu: " + values.Cpu + "%");
+                Console.WriteLine("Ram: " + values.Ram + "%");
+                Console.WriteLine("Disc: " + values.Disc + "%");
+                Console.WriteLine("Wifi: " + values.Wifi + "%");
+                */
+                #endregion
+
+                statusStrip.Items[0].Text = $"Cpu: {SshNetService.Cpu}%";
+                statusStrip.Items[1].Text = $"Ram: {SshNetService.Ram}%";
+                statusStrip.Items[2].Text = $"Disc: {SshNetService.Disc}%";
+                statusStrip.Items[3].Text = $"Wifi: {SshNetService.Wifi}%";
+            }
+            finally
+            {
+                timer.Start();
+            }
         }
+
+        private void TbChanges(object Sender, EventArgs e)
+        {
+            chkAlertTemperature.Text = $"Critical Temperature (C): [{tbAlertTemperature.Value}]";
+            chkAlertCpuUsage.Text = $"Critical Cpu Usage (%): [{tbAlertCpuUsage.Value}]";
+            chkAlertRamUsage.Text = $"Critical Ram Usage (%): [{tbAlertRamUsage.Value}]";
+            WarningSystem.SetFrequency(tbAlertTemperature.Value, tbAlertCpuUsage.Value, tbAlertRamUsage.Value);
+        }
+        private void ChkChanges(object Sender, EventArgs e)
+        {
+            WarningSystem.SetChecked(chkAlertTemperature.Checked, chkAlertCpuUsage.Checked, chkAlertRamUsage.Checked);
+        }
+
+
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -60,6 +91,21 @@ namespace CoreTether
                 this.Hide();
             }
         }
+        public static void WarningTriggered(string warningType, float currentValue, float maxValue)
+        {
+            string message = $"{warningType} has exceeded the maximum value!\nCurrent Value: {currentValue}\nMax Value: {maxValue}";
 
+            sysTrayIcon.BalloonTipTitle = "Warning";
+            sysTrayIcon.BalloonTipText = message;
+            sysTrayIcon.BalloonTipIcon = ToolTipIcon.Warning;
+            sysTrayIcon.ShowBalloonTip(3000);
+        }
+        public static int CheckFrequency { get; private set; } = 1;
+
+        private void tbWatchInterval_Scroll(object sender, EventArgs e)
+        {
+            lblCheckFrequency.Text = $"Check Frequency (s): [{tbWatchInterval.Value}]";
+            CheckFrequency = tbWatchInterval.Value;
+        }
     }
 }

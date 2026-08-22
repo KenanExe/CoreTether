@@ -48,7 +48,7 @@
             chkRamUsage = new CheckBox();
             lblCalues = new Label();
             chkDiskUsage = new CheckBox();
-            lblCheckFewquency = new Label();
+            lblCheckFrequency = new Label();
             tbWatchInterval = new TrackBar();
             chkCpuTemperature = new CheckBox();
             grpCriticalAlert = new GroupBox();
@@ -186,7 +186,7 @@
             grpWatchingSettings.Controls.Add(chkRamUsage);
             grpWatchingSettings.Controls.Add(lblCalues);
             grpWatchingSettings.Controls.Add(chkDiskUsage);
-            grpWatchingSettings.Controls.Add(lblCheckFewquency);
+            grpWatchingSettings.Controls.Add(lblCheckFrequency);
             grpWatchingSettings.Controls.Add(tbWatchInterval);
             grpWatchingSettings.Controls.Add(chkCpuTemperature);
             grpWatchingSettings.Location = new Point(268, 12);
@@ -201,9 +201,9 @@
             chkCpuLoad.AutoSize = true;
             chkCpuLoad.Location = new Point(6, 148);
             chkCpuLoad.Name = "chkCpuLoad";
-            chkCpuLoad.Size = new Size(125, 24);
+            chkCpuLoad.Size = new Size(120, 24);
             chkCpuLoad.TabIndex = 3;
-            chkCpuLoad.Text = "Cpur Load (%)";
+            chkCpuLoad.Text = "Cpu Load (%)";
             chkCpuLoad.UseVisualStyleBackColor = true;
             // 
             // chkRamUsage
@@ -235,14 +235,14 @@
             chkDiskUsage.Text = "Disk Usage (%)";
             chkDiskUsage.UseVisualStyleBackColor = true;
             // 
-            // lblCheckFewquency
+            // lblCheckFrequency
             // 
-            lblCheckFewquency.AutoSize = true;
-            lblCheckFewquency.Location = new Point(6, 33);
-            lblCheckFewquency.Name = "lblCheckFewquency";
-            lblCheckFewquency.Size = new Size(212, 20);
-            lblCheckFewquency.TabIndex = 1;
-            lblCheckFewquency.Text = "Check Fewquency (Speeds): [0]";
+            lblCheckFrequency.AutoSize = true;
+            lblCheckFrequency.Location = new Point(6, 33);
+            lblCheckFrequency.Name = "lblCheckFrequency";
+            lblCheckFrequency.Size = new Size(206, 20);
+            lblCheckFrequency.TabIndex = 1;
+            lblCheckFrequency.Text = "Check Frequency (Speeds): [1]";
             // 
             // tbWatchInterval
             // 
@@ -250,6 +250,8 @@
             tbWatchInterval.Name = "tbWatchInterval";
             tbWatchInterval.Size = new Size(238, 56);
             tbWatchInterval.TabIndex = 0;
+            tbWatchInterval.Value = 1;
+            tbWatchInterval.Scroll += tbWatchInterval_Scroll;
             // 
             // chkCpuTemperature
             // 
@@ -279,16 +281,20 @@
             // tbAlertRamUsage
             // 
             tbAlertRamUsage.Location = new Point(6, 235);
+            tbAlertRamUsage.Maximum = 100;
             tbAlertRamUsage.Name = "tbAlertRamUsage";
             tbAlertRamUsage.Size = new Size(238, 56);
             tbAlertRamUsage.TabIndex = 5;
+            tbAlertRamUsage.Scroll += TbChanges;
             // 
             // tbAlertCpuUsage
             // 
             tbAlertCpuUsage.Location = new Point(6, 146);
+            tbAlertCpuUsage.Maximum = 100;
             tbAlertCpuUsage.Name = "tbAlertCpuUsage";
             tbAlertCpuUsage.Size = new Size(238, 56);
             tbAlertCpuUsage.TabIndex = 4;
+            tbAlertCpuUsage.Scroll += TbChanges;
             // 
             // chkAlertRamUsage
             // 
@@ -299,6 +305,7 @@
             chkAlertRamUsage.TabIndex = 2;
             chkAlertRamUsage.Text = "Critical Ram Usage (%): [0]";
             chkAlertRamUsage.UseVisualStyleBackColor = true;
+            chkAlertRamUsage.CheckedChanged += ChkChanges;
             // 
             // chkAlertTemperature
             // 
@@ -309,13 +316,16 @@
             chkAlertTemperature.TabIndex = 0;
             chkAlertTemperature.Text = "Critical Temperature (C): [0]";
             chkAlertTemperature.UseVisualStyleBackColor = true;
+            chkAlertTemperature.CheckedChanged += ChkChanges;
             // 
             // tbAlertTemperature
             // 
             tbAlertTemperature.Location = new Point(6, 63);
+            tbAlertTemperature.Maximum = 100;
             tbAlertTemperature.Name = "tbAlertTemperature";
             tbAlertTemperature.Size = new Size(238, 56);
             tbAlertTemperature.TabIndex = 3;
+            tbAlertTemperature.Scroll += TbChanges;
             // 
             // chkAlertCpuUsage
             // 
@@ -326,6 +336,7 @@
             chkAlertCpuUsage.TabIndex = 1;
             chkAlertCpuUsage.Text = "Critical Cpu Usage (%): [0]";
             chkAlertCpuUsage.UseVisualStyleBackColor = true;
+            chkAlertCpuUsage.CheckedChanged += ChkChanges;
             // 
             // statusStrip
             // 
@@ -367,8 +378,6 @@
         }
 
         #endregion
-
-        private NotifyIcon sysTrayIcon;
         private ContextMenuStrip trayContextMenuStrip;
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripMenuItem settingsToolStripMenuItem;
@@ -387,7 +396,7 @@
         private CheckBox chkRamUsage;
         private Label lblCalues;
         private CheckBox chkDiskUsage;
-        private Label lblCheckFewquency;
+        private Label lblCheckFrequency;
         private TrackBar tbWatchInterval;
         private CheckBox chkCpuTemperature;
         private TrackBar tbAlertRamUsage;
@@ -397,5 +406,6 @@
         private TrackBar tbAlertTemperature;
         private CheckBox chkAlertCpuUsage;
         private StatusStrip statusStrip;
+        private static NotifyIcon sysTrayIcon;
     }
 }
