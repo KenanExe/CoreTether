@@ -35,6 +35,7 @@
             exitToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
             grpServerProfiles = new GroupBox();
+            btnStart = new Button();
             btnConnect = new Button();
             btnClear = new Button();
             txtPassword = new TextBox();
@@ -99,6 +100,7 @@
             // 
             // grpServerProfiles
             // 
+            grpServerProfiles.Controls.Add(btnStart);
             grpServerProfiles.Controls.Add(btnConnect);
             grpServerProfiles.Controls.Add(btnClear);
             grpServerProfiles.Controls.Add(txtPassword);
@@ -114,6 +116,16 @@
             grpServerProfiles.TabStop = false;
             grpServerProfiles.Text = "Server Profiles";
             // 
+            // btnStart
+            // 
+            btnStart.Location = new Point(6, 190);
+            btnStart.Name = "btnStart";
+            btnStart.Size = new Size(238, 29);
+            btnStart.TabIndex = 11;
+            btnStart.Text = "Start";
+            btnStart.UseVisualStyleBackColor = true;
+            btnStart.Click += btnStart_Click;
+            // 
             // btnConnect
             // 
             btnConnect.Location = new Point(134, 155);
@@ -122,6 +134,7 @@
             btnConnect.TabIndex = 10;
             btnConnect.Text = "Connect";
             btnConnect.UseVisualStyleBackColor = true;
+            btnConnect.Click += btnConnect_Click;
             // 
             // btnClear
             // 
@@ -131,6 +144,7 @@
             btnClear.TabIndex = 9;
             btnClear.Text = "Clear";
             btnClear.UseVisualStyleBackColor = true;
+            btnClear.Click += btnClear_Click;
             // 
             // txtPassword
             // 
@@ -205,6 +219,7 @@
             chkCpuLoad.TabIndex = 3;
             chkCpuLoad.Text = "Cpu Load (%)";
             chkCpuLoad.UseVisualStyleBackColor = true;
+            chkCpuLoad.CheckedChanged += chkCpuLoad_CheckedChanged;
             // 
             // chkRamUsage
             // 
@@ -215,6 +230,7 @@
             chkRamUsage.TabIndex = 4;
             chkRamUsage.Text = "Ram Usage (MB)";
             chkRamUsage.UseVisualStyleBackColor = true;
+            chkRamUsage.CheckedChanged += chkRamUsage_CheckedChanged;
             // 
             // lblCalues
             // 
@@ -234,6 +250,7 @@
             chkDiskUsage.TabIndex = 6;
             chkDiskUsage.Text = "Disk Usage (%)";
             chkDiskUsage.UseVisualStyleBackColor = true;
+            chkDiskUsage.CheckedChanged += chkDiskUsage_CheckedChanged;
             // 
             // lblCheckFrequency
             // 
@@ -246,7 +263,9 @@
             // 
             // tbWatchInterval
             // 
+            tbWatchInterval.LargeChange = 2;
             tbWatchInterval.Location = new Point(6, 61);
+            tbWatchInterval.Minimum = 1;
             tbWatchInterval.Name = "tbWatchInterval";
             tbWatchInterval.Size = new Size(238, 56);
             tbWatchInterval.TabIndex = 0;
@@ -262,6 +281,7 @@
             chkCpuTemperature.TabIndex = 5;
             chkCpuTemperature.Text = "Cpu Temperature (C)";
             chkCpuTemperature.UseVisualStyleBackColor = true;
+            chkCpuTemperature.CheckedChanged += chkCpuTemperature_CheckedChanged;
             // 
             // grpCriticalAlert
             // 
@@ -406,6 +426,7 @@
         private TrackBar tbAlertTemperature;
         private CheckBox chkAlertCpuUsage;
         private StatusStrip statusStrip;
+        private Button btnStart;
         private static NotifyIcon sysTrayIcon;
     }
 }

@@ -6,7 +6,7 @@ namespace CoreTether
 {
     internal static class SshNetService
     {
-        static bool demo = true;
+        static public bool demo = false;
         #region Connection Settings
 
         private static string UserName { get; set; }
@@ -25,7 +25,7 @@ namespace CoreTether
         #endregion
 
 
-        public static Task<bool> ConnectSsh()
+        public static async Task<bool> ConnectSsh()
         {
             Console.WriteLine("Connection starting...");
             using var client = new SshClient(Host, Port, UserName, Password);
@@ -36,12 +36,12 @@ namespace CoreTether
 
                 var command = client.RunCommand("whoami");
                 Console.WriteLine($"Results: {command.Result.Trim()}");
-                return Task.FromResult(true);
+                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"SSH Error: {ex.Message}");
-                return Task.FromResult(false);
+                return false;
             }
             finally
             {
@@ -50,25 +50,28 @@ namespace CoreTether
             }
         }
 
-        private static Task<string> RunSshCommand(string commandText)
+        private static async Task<string> RunSshCommand(string commandText)
         {
-            using var client = new SshClient(Host, Port, UserName, Password);
-            try
+            return await Task.Run(() =>
             {
-                client.Connect();
-                var command = client.RunCommand(commandText);
-                return Task.FromResult(command.Result.Trim());
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"SSH Error: {ex.Message}");
-                return null;
-            }
-            finally
-            {
-                if (client.IsConnected)
-                    client.Disconnect();
-            }
+                using var client = new SshClient(Host, Port, UserName, Password);
+                try
+                {
+                    client.Connect();
+                    var command = client.RunCommand(commandText);
+                    return command.Result.Trim();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"SSH Error: {ex.Message}");
+                    return null;
+                }
+                finally
+                {
+                    if (client.IsConnected)
+                        client.Disconnect();
+                }
+            });
         }
 
 
@@ -78,21 +81,26 @@ namespace CoreTether
         public static float Ram { get; private set; }
         public static float Disc { get; private set; }
         public static float Wifi { get; private set; }
-        
+
         private static float RamSize { get; set; }
         private static float CpuThreads { get; set; }
 
         public static float CpuTemp { get; private set; }
 
+        public static bool CanGetCpu { get; set; }
+        public static bool CanGetRam { get; set; }
+        public static bool CanGetDisc { get; set; }
+        public static bool CanGetWifi { get; set; }
+        public static bool CanGetCpuTemp { get; set; }
 
 
-
-        private static void SetValues(float? cpu = null, float? ram = null, float? disc = null, float? wifi = null)
+        private static void SetValues(float? cpu = null, float? ram = null, float? disc = null, float? wifi = null, float? cpuTemp = null)
         {
             if (cpu.HasValue) Cpu = cpu.Value;
             if (ram.HasValue) Ram = ram.Value;
             if (disc.HasValue) Disc = disc.Value;
             if (wifi.HasValue) Wifi = wifi.Value;
+            if (cpuTemp.HasValue) CpuTemp = cpuTemp.Value;
         }
         private static void SetImportedValues(float? ramSize = null, float? cpuThreads = null)
         {
@@ -106,8 +114,8 @@ namespace CoreTether
             {
                 Random random = new Random();
                 SetImportedValues(
-                          (float)Math.Round(random.NextDouble() * 64000),
-                          (float)Math.Round(random.NextDouble() * 24)
+                          (float)Math.Round(random.NextDouble() * 32000),
+                          (float)Math.Round(random.NextDouble() * 12)
                            );
                 Console.WriteLine($"Imported Values: RamSize={RamSize}, CpuThreads={CpuThreads}");
             }
@@ -134,35 +142,74 @@ namespace CoreTether
                                                          // showing more precise values provides better detail.
                 {
                     Random random = new Random();
-                    SetValues(
-                              (float)Math.Round(random.NextDouble() * 100, 2),
-                              (float)Math.Round(random.NextDouble() * 100, 2),
-                              (float)Math.Round(random.NextDouble() * 100, 2),
-                              (float)Math.Round(random.NextDouble() * 100, 2)
-                               );
+                    if (CanGetCpu)
+                        SetValues((float)Math.Round(random.NextDouble() * 100, 2)); //cpu
+                    else
+                        SetValues(0); //cpu
+
+                    if (CanGetRam)
+                        SetValues(null, (float)Math.Round(random.NextDouble() * 100, 2)); // ram
+                    else
+                        SetValues(null, 0); // ram
+                    if (CanGetDisc)
+                        SetValues(null, null, (float)Math.Round(random.NextDouble() * 100, 2)); //disc
+                    else
+                        SetValues(null, null, 0); //disc
+                    if (CanGetWifi)
+                        SetValues(null, null, null, (float)Math.Round(random.NextDouble() * 100, 2)); //wifi
+                    else
+                        SetValues(null, null, null, 0); //wifi
+                    if (CanGetCpuTemp)
+                        SetValues(null, null, null, null, (float)Math.Round(random.NextDouble() * 100, 2)); //cpuTemp
+                    else
+                        SetValues(null, null, null, null, 0); //cpuTemp
                 }
                 else
                 {
                     Random random = new Random();
-                    SetValues(
-                              (float)Math.Round(random.NextDouble() * 100),
-                              (float)Math.Round(random.NextDouble() * 100),
-                              (float)Math.Round(random.NextDouble() * 100),
-                              (float)Math.Round(random.NextDouble() * 100)
-                               );
+                    if (CanGetCpu)
+                        SetValues((float)Math.Round(random.NextDouble() * 100)); //cpu
+                    else
+                        SetValues(0); //cpu
+
+                    if (CanGetRam)
+                        SetValues(null, (float)Math.Round(random.NextDouble() * 100)); // ram
+                    else
+                        SetValues(null, 0); // ram
+                    if (CanGetDisc)
+                        SetValues(null, null, (float)Math.Round(random.NextDouble() * 100)); //disc
+                    else
+                        SetValues(null, null, 0); //disc
+                    if (CanGetWifi)
+                        SetValues(null, null, null, (float)Math.Round(random.NextDouble() * 100)); //wifi
+                    else
+                        SetValues(null, null, null, 0); //wifi
+                    if (CanGetCpuTemp)
+                        SetValues(null, null, null, null, (float)Math.Round(random.NextDouble() * 100)); //cpuTemp
+                    else
+                        SetValues(null, null, null, null, 0); //cpuTemp
                 }
             }
             else
             {
+                Task<string> cpuTask = CanGetCpu ? RunSshCommand("bash -c 'read -r _ u1 n1 s1 i1 w1 x1 y1 z1 < /proc/stat; sleep 0.3; read -r _ u2 n2 s2 i2 w2 x2 y2 z2 < /proc/stat; t1=$((u1+n1+s1+i1+w1+x1+y1+z1)); t2=$((u2+n2+s2+i2+w2+x2+y2+z2)); idle1=$((i1+w1)); idle2=$((i2+w2)); dt=$((t2-t1)); di=$((idle2-idle1)); echo $(( (1000*(dt-di)/dt+5)/10 ))'") : Task.FromResult<string>(null);
+                Task<string> ramTask = CanGetRam ? RunSshCommand("awk '/Mem:/{print int($3/$2*100)}' /proc/meminfo") : Task.FromResult<string>(null);
+                Task<string> diskTask = CanGetDisc ? RunSshCommand("df / | tail -1 | awk '{print $5}' | tr -d '%'") : Task.FromResult<string>(null);
+                Task<string> wifiTask = CanGetWifi ? RunSshCommand("nmcli -t -f active,signal dev wifi | grep '^yes:' | cut -d: -f2") : Task.FromResult<string>(null);
+                Task<string> tempTask = CanGetCpuTemp ? RunSshCommand("cat /sys/class/thermal/thermal_zone0/temp | awk '{print $1/1000}'") : Task.FromResult<string>(null);
+                await Task.WhenAll(cpuTask, ramTask, diskTask, wifiTask, tempTask);
+
                 SetValues(
-                    ParseValue(await RunSshCommand("top -bn2 -d 1 | grep \"Cpu(s)\" | tail -1 | awk -F'id,' '{split($1,a,\",\"); v=a[length(a)]; gsub(/[^0-9.]/,\"\",v); print 100-v}'")),
-                    ParseValue(await RunSshCommand("free | grep Mem | awk '{print int($3/$2 * 100)}'")),
-                    ParseValue(await RunSshCommand("df / | tail -1 | awk '{print $5}' | tr -d '%'")),
-                    ParseValue(await RunSshCommand("nmcli -t -f active,signal dev wifi | grep '^yes:' | cut -d: -f2"))
+                    CanGetCpu ? await ParseValue(cpuTask.Result) : 0,
+                    CanGetRam ? await ParseValue(ramTask.Result) : 0,
+                    CanGetDisc ? await ParseValue(diskTask.Result) : 0,
+                    CanGetWifi ? await ParseValue(wifiTask.Result) : 0,
+                    CanGetCpuTemp ? await ParseValue(tempTask.Result) : 0
                 );
+
             }
         }
-        private static float ParseValue(string raw)
+        private async static Task<float> ParseValue(string raw)
         {
             return float.TryParse(raw?.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var val)
                 ? val

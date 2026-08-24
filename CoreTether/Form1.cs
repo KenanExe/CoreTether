@@ -20,15 +20,28 @@ namespace CoreTether
         {
             Application.Exit();
         }
+        //*
+
         private Timer timer;
         private async void Form1_Load(object sender, EventArgs e)
         {
             this.Hide();
             timer = new Timer();
-            SshNetService.SetSshCredentials("test.rebex.net", "demo", "password");
-            for (int i = 0; i < 4; i++)
-                statusStrip.Items.Add("loading");
-            timer.Interval = CheckFrequency*1000; // ToDo: fix this later, make it dynamic
+            for (int i = 0; i < 5; i++)
+                statusStrip.Items.Add("");
+            Console.WriteLine("");
+        }
+        async void StartLoop()
+        {
+            if (SshNetService.demo)
+            {
+                SshNetService.SetSshCredentials("test.rebex.net", "demo", "password");
+            }
+            else
+            {
+
+            }
+            timer.Interval = CheckFrequency * 1000;
             timer.Tick += Timer_Tick;
             timer.Start();
             bool status = await SshNetService.ConnectSsh();
@@ -45,7 +58,9 @@ namespace CoreTether
                                    "Cpu  " + SshNetService.Cpu + "%\n" +
                                    "Ram  " + SshNetService.Ram + "%\n" +
                                    "Disc " + SshNetService.Disc + "%\n" +
-                                   "Wifi " + SshNetService.Wifi + "%";
+                                   "Wifi " + SshNetService.Wifi + "%\n" +
+                                   "CpuTemp:" + SshNetService.CpuTemp + "C";
+                                    
 
                 #region system info console output
                 /*
@@ -62,12 +77,33 @@ namespace CoreTether
                 statusStrip.Items[1].Text = $"Ram: {SshNetService.Ram}%";
                 statusStrip.Items[2].Text = $"Disc: {SshNetService.Disc}%";
                 statusStrip.Items[3].Text = $"Wifi: {SshNetService.Wifi}%";
+                statusStrip.Items[4].Text = $"CpuTemp: {SshNetService.CpuTemp}C";
             }
             finally
             {
+                timer.Interval = CheckFrequency * 1000;
                 timer.Start();
             }
         }
+
+        public bool StartStatus { get; set; }
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            if (!StartStatus)
+            {
+                StartStatus = true;
+                StartLoop();
+                btnStart.Text = "Stop";
+            }
+            else
+            {
+                StartStatus = false;
+                timer.Stop();
+                btnStart.Text = "Start";
+            }
+        }
+
+        //*
 
         private void TbChanges(object Sender, EventArgs e)
         {
@@ -106,6 +142,38 @@ namespace CoreTether
         {
             lblCheckFrequency.Text = $"Check Frequency (s): [{tbWatchInterval.Value}]";
             CheckFrequency = tbWatchInterval.Value;
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtIPAddress.Text = "";
+            txtPassword.Text = "";
+            txtUserName.Text = "";
+
+        }
+        private void btnConnect_Click(object sender, EventArgs e)
+        {
+            SshNetService.SetSshCredentials(txtIPAddress.Text, txtUserName.Text, txtPassword.Text);
+        }
+
+        private void chkCpuLoad_CheckedChanged(object sender, EventArgs e)
+        {
+            SshNetService.CanGetCpu = chkCpuLoad.Checked;
+        }
+
+        private void chkRamUsage_CheckedChanged(object sender, EventArgs e)
+        {
+            SshNetService.CanGetRam = chkRamUsage.Checked;
+        }
+
+        private void chkCpuTemperature_CheckedChanged(object sender, EventArgs e)
+        {
+            SshNetService.CanGetCpuTemp = chkCpuTemperature.Checked;
+        }
+
+        private void chkDiskUsage_CheckedChanged(object sender, EventArgs e)
+        {
+            SshNetService.CanGetDisc = chkDiskUsage.Checked;
         }
     }
 }
