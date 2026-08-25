@@ -193,27 +193,37 @@ namespace CoreTether
             else
             {
                 Task<string> cpuTask = CanGetCpu ? RunSshCommand("bash -c 'read -r _ u1 n1 s1 i1 w1 x1 y1 z1 < /proc/stat; sleep 0.3; read -r _ u2 n2 s2 i2 w2 x2 y2 z2 < /proc/stat; t1=$((u1+n1+s1+i1+w1+x1+y1+z1)); t2=$((u2+n2+s2+i2+w2+x2+y2+z2)); idle1=$((i1+w1)); idle2=$((i2+w2)); dt=$((t2-t1)); di=$((idle2-idle1)); echo $(( (1000*(dt-di)/dt+5)/10 ))'") : Task.FromResult<string>(null);
-                Task<string> ramTask = CanGetRam ? RunSshCommand("awk '/Mem:/{print int($3/$2*100)}' /proc/meminfo") : Task.FromResult<string>(null);
+                Task<string> ramTask = CanGetRam ? RunSshCommand("free | awk '/Mem:/{print int($3/$2*100)}'") : Task.FromResult<string>(null);
                 Task<string> diskTask = CanGetDisc ? RunSshCommand("df / | tail -1 | awk '{print $5}' | tr -d '%'") : Task.FromResult<string>(null);
                 Task<string> wifiTask = CanGetWifi ? RunSshCommand("nmcli -t -f active,signal dev wifi | grep '^yes:' | cut -d: -f2") : Task.FromResult<string>(null);
                 Task<string> tempTask = CanGetCpuTemp ? RunSshCommand("cat /sys/class/thermal/thermal_zone0/temp | awk '{print $1/1000}'") : Task.FromResult<string>(null);
                 await Task.WhenAll(cpuTask, ramTask, diskTask, wifiTask, tempTask);
 
                 SetValues(
-                    CanGetCpu ? await ParseValue(cpuTask.Result) : 0,
-                    CanGetRam ? await ParseValue(ramTask.Result) : 0,
-                    CanGetDisc ? await ParseValue(diskTask.Result) : 0,
-                    CanGetWifi ? await ParseValue(wifiTask.Result) : 0,
-                    CanGetCpuTemp ? await ParseValue(tempTask.Result) : 0
+                    CanGetCpu ? await ParseValue(cpuTask.Result,"cpu") : 0,
+                    CanGetRam ? await ParseValue(ramTask.Result, "ram") : 0,
+                    CanGetDisc ? await ParseValue(diskTask.Result, "disk") : 0,
+                    CanGetWifi ? await ParseValue(wifiTask.Result, "wifi") : 0,
+                    CanGetCpuTemp ? await ParseValue(tempTask.Result, "temp") : 0
                 );
 
             }
         }
-        private async static Task<float> ParseValue(string raw)
+        private static async Task<float> ParseValue(string raw,string who)
         {
-            return float.TryParse(raw?.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var val)
-                ? val
-                : 0f;
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                Console.WriteLine($"ParseValue: value null or empty and {who} want to write");
+                return 0f;
+            }
+
+            if (float.TryParse(raw.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
+            {
+                return val;
+            }
+
+            Console.WriteLine($"ParseValue: cant be a parse -> '{raw}'");
+            return 0f;
         }
         #endregion
     }
