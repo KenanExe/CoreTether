@@ -1,3 +1,4 @@
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using Timer = System.Windows.Forms.Timer;
 namespace CoreTether
 {
@@ -29,18 +30,9 @@ namespace CoreTether
             timer = new Timer();
             for (int i = 0; i < 5; i++)
                 statusStrip.Items.Add("");
-            Console.WriteLine("");
         }
         async void StartLoop()
         {
-            if (SshNetService.demo)
-            {
-                SshNetService.SetSshCredentials("test.rebex.net", "demo", "password");
-            }
-            else
-            {
-
-            }
             timer.Interval = CheckFrequency * 1000;
             timer.Tick += Timer_Tick;
             timer.Start();
@@ -60,7 +52,7 @@ namespace CoreTether
                                    "Disc " + SshNetService.Disc + "%\n" +
                                    "Wifi " + SshNetService.Wifi + "%\n" +
                                    "CpuTemp:" + SshNetService.CpuTemp + "C";
-                                    
+
 
                 #region system info console output
                 /*
@@ -174,6 +166,39 @@ namespace CoreTether
         private void chkDiskUsage_CheckedChanged(object sender, EventArgs e)
         {
             SshNetService.CanGetDisc = chkDiskUsage.Checked;
+        }
+
+        private void chkWifiUsage_CheckedChanged(object sender, EventArgs e)
+        {
+            SshNetService.CanGetWifi = chkWifiUsage.Checked;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            SshNetService.demo = chkDemo.Checked;
+            if (chkDemo.Checked)
+            {
+                txtIPAddress.Text = "test.rebex.net";
+                txtUserName.Text = "demo";
+                txtPassword.Text = "password";
+            }
+            else
+            {
+
+                txtIPAddress.Text = string.Empty;
+                txtUserName.Text = string.Empty;
+                txtPassword.Text =  string.Empty;
+            }
+        }
+        void textchange(object sender, EventArgs e)
+        {
+            btnStart.Enabled = canBeConnect();
+        }
+        bool canBeConnect()
+        {
+            return !string.IsNullOrWhiteSpace(txtIPAddress.Text)
+                && !string.IsNullOrWhiteSpace(txtPassword.Text)
+                && !string.IsNullOrWhiteSpace(txtUserName.Text);
         }
     }
 }

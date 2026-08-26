@@ -35,6 +35,7 @@
             exitToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
             grpServerProfiles = new GroupBox();
+            chkDemo = new CheckBox();
             btnStart = new Button();
             btnConnect = new Button();
             btnClear = new Button();
@@ -45,6 +46,7 @@
             lblIPAdress = new Label();
             txtIPAddress = new TextBox();
             grpWatchingSettings = new GroupBox();
+            chkWifiUsage = new CheckBox();
             chkCpuLoad = new CheckBox();
             chkRamUsage = new CheckBox();
             lblCalues = new Label();
@@ -100,6 +102,7 @@
             // 
             // grpServerProfiles
             // 
+            grpServerProfiles.Controls.Add(chkDemo);
             grpServerProfiles.Controls.Add(btnStart);
             grpServerProfiles.Controls.Add(btnConnect);
             grpServerProfiles.Controls.Add(btnClear);
@@ -116,8 +119,20 @@
             grpServerProfiles.TabStop = false;
             grpServerProfiles.Text = "Server Profiles";
             // 
+            // chkDemo
+            // 
+            chkDemo.AutoSize = true;
+            chkDemo.Location = new Point(6, 225);
+            chkDemo.Name = "chkDemo";
+            chkDemo.Size = new Size(115, 24);
+            chkDemo.TabIndex = 8;
+            chkDemo.Text = "Demo Mode";
+            chkDemo.UseVisualStyleBackColor = true;
+            chkDemo.CheckedChanged += checkBox1_CheckedChanged;
+            // 
             // btnStart
             // 
+            btnStart.Enabled = false;
             btnStart.Location = new Point(6, 190);
             btnStart.Name = "btnStart";
             btnStart.Size = new Size(238, 29);
@@ -152,6 +167,7 @@
             txtPassword.Name = "txtPassword";
             txtPassword.Size = new Size(147, 27);
             txtPassword.TabIndex = 8;
+            txtPassword.TextChanged += textchange;
             // 
             // lblPassword
             // 
@@ -168,6 +184,7 @@
             txtUserName.Name = "txtUserName";
             txtUserName.Size = new Size(147, 27);
             txtUserName.TabIndex = 7;
+            txtUserName.TextChanged += textchange;
             // 
             // lblUserName
             // 
@@ -193,9 +210,11 @@
             txtIPAddress.Name = "txtIPAddress";
             txtIPAddress.Size = new Size(147, 27);
             txtIPAddress.TabIndex = 6;
+            txtIPAddress.TextChanged += textchange;
             // 
             // grpWatchingSettings
             // 
+            grpWatchingSettings.Controls.Add(chkWifiUsage);
             grpWatchingSettings.Controls.Add(chkCpuLoad);
             grpWatchingSettings.Controls.Add(chkRamUsage);
             grpWatchingSettings.Controls.Add(lblCalues);
@@ -209,6 +228,17 @@
             grpWatchingSettings.TabIndex = 2;
             grpWatchingSettings.TabStop = false;
             grpWatchingSettings.Text = "Watching Settings";
+            // 
+            // chkWifiUsage
+            // 
+            chkWifiUsage.AutoSize = true;
+            chkWifiUsage.Location = new Point(6, 267);
+            chkWifiUsage.Name = "chkWifiUsage";
+            chkWifiUsage.Size = new Size(129, 24);
+            chkWifiUsage.TabIndex = 7;
+            chkWifiUsage.Text = "Wifi Usage (%)";
+            chkWifiUsage.UseVisualStyleBackColor = true;
+            chkWifiUsage.CheckedChanged += chkWifiUsage_CheckedChanged;
             // 
             // chkCpuLoad
             // 
@@ -379,7 +409,6 @@
             Name = "Form1";
             ShowInTaskbar = false;
             Text = "CoreTether";
-            WindowState = FormWindowState.Minimized;
             FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             trayContextMenuStrip.ResumeLayout(false);
@@ -427,6 +456,8 @@
         private CheckBox chkAlertCpuUsage;
         private StatusStrip statusStrip;
         private Button btnStart;
+        private CheckBox chkWifiUsage;
+        private CheckBox chkDemo;
         private static NotifyIcon sysTrayIcon;
     }
 }
