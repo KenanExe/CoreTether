@@ -50,7 +50,7 @@ namespace CoreTether
                                    "Cpu  " + SshNetService.Cpu + "%\n" +
                                    "Ram  " + SshNetService.Ram + "%\n" +
                                    "Disc " + SshNetService.Disc + "%\n" +
-                                   "Wifi " + SshNetService.Wifi + "%\n" +
+                                   "Wifi " + SshNetService.Wifi + "KB/s\n" +
                                    "CpuTemp:" + SshNetService.CpuTemp + "C";
 
 
@@ -68,7 +68,7 @@ namespace CoreTether
                 statusStrip.Items[0].Text = $"Cpu: {SshNetService.Cpu}%";
                 statusStrip.Items[1].Text = $"Ram: {SshNetService.Ram}%";
                 statusStrip.Items[2].Text = $"Disc: {SshNetService.Disc}%";
-                statusStrip.Items[3].Text = $"Wifi: {SshNetService.Wifi}%";
+                statusStrip.Items[3].Text = $"Wifi: {SshNetService.Wifi}KB/s";
                 statusStrip.Items[4].Text = $"CpuTemp: {SshNetService.CpuTemp}C";
             }
             finally
@@ -146,6 +146,7 @@ namespace CoreTether
         private void btnConnect_Click(object sender, EventArgs e)
         {
             SshNetService.SetSshCredentials(txtIPAddress.Text, txtUserName.Text, txtPassword.Text);
+            textchange(sender,e);
         }
 
         private void chkCpuLoad_CheckedChanged(object sender, EventArgs e)
@@ -192,7 +193,8 @@ namespace CoreTether
         }
         void textchange(object sender, EventArgs e)
         {
-            btnStart.Enabled = canBeConnect();
+            btnConnect.Enabled = canBeConnect();
+            btnStart.Enabled = SshNetService.HasConnectionInfo();
         }
         bool canBeConnect()
         {

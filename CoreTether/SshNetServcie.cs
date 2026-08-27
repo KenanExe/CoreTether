@@ -6,9 +6,14 @@ namespace CoreTether
 {
     internal static class SshNetService
     {
-        static public bool demo = false;
+        public static bool demo { get; set; } = false;
         #region Connection Settings
-
+        public static bool HasConnectionInfo()
+        {
+            return !string.IsNullOrWhiteSpace(UserName)
+                && !string.IsNullOrWhiteSpace(Host)
+                && !string.IsNullOrWhiteSpace(Password);
+        }
         private static string UserName { get; set; }
         private static string Host { get; set; }
         private static string Password { get; set; }
@@ -80,7 +85,7 @@ namespace CoreTether
         public static float Cpu { get; private set; }
         public static float Ram { get; private set; }
         public static float Disc { get; private set; }
-        public static float Wifi { get; private set; }
+        public static string Wifi { get; private set; }
 
         private static float RamSize { get; set; }
         private static float CpuThreads { get; set; }
@@ -94,12 +99,12 @@ namespace CoreTether
         public static bool CanGetCpuTemp { get; set; }
 
 
-        private static void SetValues(float? cpu = null, float? ram = null, float? disc = null, float? wifi = null, float? cpuTemp = null)
+        private static void SetValues(float? cpu = null, float? ram = null, float? disc = null, string? wifi = null, float? cpuTemp = null)
         {
             if (cpu.HasValue) Cpu = cpu.Value;
             if (ram.HasValue) Ram = ram.Value;
             if (disc.HasValue) Disc = disc.Value;
-            if (wifi.HasValue) Wifi = wifi.Value;
+            if (string.IsNullOrWhiteSpace(wifi)) Wifi = wifi;
             if (cpuTemp.HasValue) CpuTemp = cpuTemp.Value;
         }
         private static void SetImportedValues(float? ramSize = null, float? cpuThreads = null)
@@ -156,9 +161,9 @@ namespace CoreTether
                     else
                         SetValues(null, null, 0); //disc
                     if (CanGetWifi)
-                        SetValues(null, null, null, (float)Math.Round(random.NextDouble() * 100, 2)); //wifi
+                        SetValues(null, null, null, Convert.ToString((float)Math.Round(random.NextDouble() * 100, 2))); //wifi
                     else
-                        SetValues(null, null, null, 0); //wifi
+                        SetValues(null, null, null, "0 0"); //wifi
                     if (CanGetCpuTemp)
                         SetValues(null, null, null, null, (float)Math.Round(random.NextDouble() * 100, 2)); //cpuTemp
                     else
@@ -181,9 +186,9 @@ namespace CoreTether
                     else
                         SetValues(null, null, 0); //disc
                     if (CanGetWifi)
-                        SetValues(null, null, null, (float)Math.Round(random.NextDouble() * 100)); //wifi
+                        SetValues(null, null, null, Convert.ToString((float)Math.Round(random.NextDouble() * 100))); //wifi
                     else
-                        SetValues(null, null, null, 0); //wifi
+                        SetValues(null, null, null, "0 0"); //wifi
                     if (CanGetCpuTemp)
                         SetValues(null, null, null, null, (float)Math.Round(random.NextDouble() * 100)); //cpuTemp
                     else
@@ -192,10 +197,11 @@ namespace CoreTether
             }
             else
             {
+                //cpu command anormal.
                 Task<string> cpuTask = CanGetCpu ? RunSshCommand("bash -c 'read -r _ u1 n1 s1 i1 w1 x1 y1 z1 < /proc/stat; sleep 0.3; read -r _ u2 n2 s2 i2 w2 x2 y2 z2 < /proc/stat; t1=$((u1+n1+s1+i1+w1+x1+y1+z1)); t2=$((u2+n2+s2+i2+w2+x2+y2+z2)); idle1=$((i1+w1)); idle2=$((i2+w2)); dt=$((t2-t1)); di=$((idle2-idle1)); echo $(( (1000*(dt-di)/dt+5)/10 ))'") : Task.FromResult<string>(null);
                 Task<string> ramTask = CanGetRam ? RunSshCommand("free | awk '/Mem:/{print int($3/$2*100)}'") : Task.FromResult<string>(null);
                 Task<string> diskTask = CanGetDisc ? RunSshCommand("df / | tail -1 | awk '{print $5}' | tr -d '%'") : Task.FromResult<string>(null);
-                Task<string> wifiTask = CanGetWifi ? RunSshCommand("nmcli -t -f active,signal dev wifi | grep '^yes:' | cut -d: -f2") : Task.FromResult<string>(null);
+                Task<string> wifiTask = CanGetWifi ? RunSshCommand("IF=$(ip route | awk '/default/ {print $5}' | head -1); R1=$(cat /sys/class/net/$IF/statistics/rx_bytes); T1=$(cat /sys/class/net/$IF/statistics/tx_bytes); sleep 0.5; R2=$(cat /sys/class/net/$IF/statistics/rx_bytes); T2=$(cat /sys/class/net/$IF/statistics/tx_bytes); echo \"$(( (R2-R1)*2/1024 )) $(( (T2-T1)*2/1024 ))\"") : Task.FromResult<string>(null);
                 Task<string> tempTask = CanGetCpuTemp ? RunSshCommand("cat /sys/class/thermal/thermal_zone0/temp | awk '{print $1/1000}'") : Task.FromResult<string>(null);
                 await Task.WhenAll(cpuTask, ramTask, diskTask, wifiTask, tempTask);
 
@@ -203,26 +209,47 @@ namespace CoreTether
                     CanGetCpu ? await ParseValue(cpuTask.Result,"cpu") : 0,
                     CanGetRam ? await ParseValue(ramTask.Result, "ram") : 0,
                     CanGetDisc ? await ParseValue(diskTask.Result, "disk") : 0,
-                    CanGetWifi ? await ParseValue(wifiTask.Result, "wifi") : 0,
+                    CanGetWifi ? Convert.ToString(await ParseValue(wifiTask.Result, "wifi")) : "0 0",
                     CanGetCpuTemp ? await ParseValue(tempTask.Result, "temp") : 0
                 );
 
             }
         }
-        private static async Task<float> ParseValue(string raw,string who)
+        private static async Task<float> ParseValue(string raw, string who)
         {
             if (string.IsNullOrWhiteSpace(raw))
             {
-                Console.WriteLine($"ParseValue: value null or empty and {who} want to write");
+                Console.WriteLine($"ParseValue: value null or empty and {who} want to write -> {raw}");
                 return 0f;
             }
 
-            if (float.TryParse(raw.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
+            var trimmed = raw.Trim();
+
+            if (who == "wifi")
+            {
+                var parts = trimmed.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
+                float sum = 0f;
+                bool any = false;
+                foreach (var p in parts)
+                {
+                    if (float.TryParse(p, NumberStyles.Float, CultureInfo.InvariantCulture, out var v))
+                    {
+                        sum += v;
+                        any = true;
+                    }
+                }
+                if (any) return sum;
+
+                Console.WriteLine($"ParseValue: cant be a parse -> '{raw}'");
+                return 0f;
+            }
+
+            if (float.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
             {
                 return val;
             }
 
-            Console.WriteLine($"ParseValue: cant be a parse -> '{raw}'");
+            Console.WriteLine($"ParseValue:{who} wantto be a parse but cannot -> '{raw}'");
             return 0f;
         }
         #endregion

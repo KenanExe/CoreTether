@@ -78,6 +78,7 @@
             sysTrayIcon.Icon = (Icon)resources.GetObject("sysTrayIcon.Icon");
             sysTrayIcon.Text = "CoreTether";
             sysTrayIcon.Visible = true;
+            sysTrayIcon.Click += settingsToolStripMenuItem_Click;
             // 
             // trayContextMenuStrip
             // 
@@ -143,6 +144,7 @@
             // 
             // btnConnect
             // 
+            btnConnect.Enabled = false;
             btnConnect.Location = new Point(134, 155);
             btnConnect.Name = "btnConnect";
             btnConnect.Size = new Size(110, 29);
