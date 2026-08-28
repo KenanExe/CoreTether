@@ -104,7 +104,7 @@ namespace CoreTether
             if (cpu.HasValue) Cpu = cpu.Value;
             if (ram.HasValue) Ram = ram.Value;
             if (disc.HasValue) Disc = disc.Value;
-            if (string.IsNullOrWhiteSpace(wifi)) Wifi = wifi;
+            if (!string.IsNullOrWhiteSpace(wifi)) Wifi = wifi;
             if (cpuTemp.HasValue) CpuTemp = cpuTemp.Value;
         }
         private static void SetImportedValues(float? ramSize = null, float? cpuThreads = null)
@@ -161,7 +161,7 @@ namespace CoreTether
                     else
                         SetValues(null, null, 0); //disc
                     if (CanGetWifi)
-                        SetValues(null, null, null, Convert.ToString((float)Math.Round(random.NextDouble() * 100, 2))); //wifi
+                        SetValues(null, null, null, Convert.ToString((float)Math.Round(random.NextDouble() * 100) +" "+ (float)Math.Round(random.NextDouble() * 100))); //wifi
                     else
                         SetValues(null, null, null, "0 0"); //wifi
                     if (CanGetCpuTemp)
@@ -186,7 +186,7 @@ namespace CoreTether
                     else
                         SetValues(null, null, 0); //disc
                     if (CanGetWifi)
-                        SetValues(null, null, null, Convert.ToString((float)Math.Round(random.NextDouble() * 100))); //wifi
+                        SetValues(null, null, null, Convert.ToString((float)Math.Round(random.NextDouble() * 100) + " " + (float)Math.Round(random.NextDouble() * 100))); //wifi
                     else
                         SetValues(null, null, null, "0 0"); //wifi
                     if (CanGetCpuTemp)
@@ -209,7 +209,7 @@ namespace CoreTether
                     CanGetCpu ? await ParseValue(cpuTask.Result,"cpu") : 0,
                     CanGetRam ? await ParseValue(ramTask.Result, "ram") : 0,
                     CanGetDisc ? await ParseValue(diskTask.Result, "disk") : 0,
-                    CanGetWifi ? Convert.ToString(await ParseValue(wifiTask.Result, "wifi")) : "0 0",
+                    CanGetWifi ? (string.IsNullOrWhiteSpace(wifiTask.Result) ? "0 0" : wifiTask.Result.Trim()) : "0 0",
                     CanGetCpuTemp ? await ParseValue(tempTask.Result, "temp") : 0
                 );
 

@@ -258,9 +258,9 @@
             chkRamUsage.AutoSize = true;
             chkRamUsage.Location = new Point(6, 178);
             chkRamUsage.Name = "chkRamUsage";
-            chkRamUsage.Size = new Size(142, 24);
+            chkRamUsage.Size = new Size(132, 24);
             chkRamUsage.TabIndex = 4;
-            chkRamUsage.Text = "Ram Usage (MB)";
+            chkRamUsage.Text = "Ram Usage (%)";
             chkRamUsage.UseVisualStyleBackColor = true;
             chkRamUsage.CheckedChanged += chkRamUsage_CheckedChanged;
             // 
@@ -309,9 +309,9 @@
             chkCpuTemperature.AutoSize = true;
             chkCpuTemperature.Location = new Point(6, 208);
             chkCpuTemperature.Name = "chkCpuTemperature";
-            chkCpuTemperature.Size = new Size(168, 24);
+            chkCpuTemperature.Size = new Size(174, 24);
             chkCpuTemperature.TabIndex = 5;
-            chkCpuTemperature.Text = "Cpu Temperature (C)";
+            chkCpuTemperature.Text = "Cpu Temperature (°C)";
             chkCpuTemperature.UseVisualStyleBackColor = true;
             chkCpuTemperature.CheckedChanged += chkCpuTemperature_CheckedChanged;
             // 
