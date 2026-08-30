@@ -1,6 +1,7 @@
 ﻿using Renci.SshNet;
 using System;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace CoreTether
 {
@@ -113,7 +114,7 @@ namespace CoreTether
             if (cpuThreads.HasValue) CpuThreads = cpuThreads.Value;
         }
 
-        private static void GetImportedValues()
+        private static async Task GetImportedValues()
         {
             if (demo)
             {
@@ -126,7 +127,10 @@ namespace CoreTether
             }
             else
             {
-                //  I will add the code to get the values from the SSH connection here in the future
+                var ramFullSize = (await RunSshCommand("free -m | awk '/Mem:/ {print $2}'")).Trim();
+                var cpus = (await RunSshCommand("nproc")).Trim();
+                SetImportedValues(Convert.ToInt16(ramFullSize), Convert.ToInt16(cpus));
+                Console.WriteLine($"Imported Values: RamSize={RamSize}, CpuThreads={CpuThreads}");
             }
         }
 
@@ -141,7 +145,7 @@ namespace CoreTether
             if (demo)
             {
 
-                if (RamSize >= 16000 || CpuThreads >= 6) // If the system has more than 16GB of RAM or more than 6 CPU threads,
+                if (RamSize >= 16000 || CpuThreads >= 4) // If the system has more than 16GB of RAM or more than 6 CPU threads,
                                                          // generate float values with 2 decimal places.
                                                          // Since this is a more powerful server,
                                                          // showing more precise values provides better detail.
