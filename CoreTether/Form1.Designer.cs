@@ -236,9 +236,9 @@
             chkWifiUsage.AutoSize = true;
             chkWifiUsage.Location = new Point(6, 267);
             chkWifiUsage.Name = "chkWifiUsage";
-            chkWifiUsage.Size = new Size(129, 24);
+            chkWifiUsage.Size = new Size(139, 24);
             chkWifiUsage.TabIndex = 7;
-            chkWifiUsage.Text = "Wifi Usage (%)";
+            chkWifiUsage.Text = "Wifi Usage (MB)";
             chkWifiUsage.UseVisualStyleBackColor = true;
             chkWifiUsage.CheckedChanged += chkWifiUsage_CheckedChanged;
             // 
@@ -289,9 +289,9 @@
             lblCheckFrequency.AutoSize = true;
             lblCheckFrequency.Location = new Point(6, 33);
             lblCheckFrequency.Name = "lblCheckFrequency";
-            lblCheckFrequency.Size = new Size(206, 20);
+            lblCheckFrequency.Size = new Size(213, 20);
             lblCheckFrequency.TabIndex = 1;
-            lblCheckFrequency.Text = "Check Frequency (Speeds): [1]";
+            lblCheckFrequency.Text = "Check Frequency (Seconds): [1]";
             // 
             // tbWatchInterval
             // 

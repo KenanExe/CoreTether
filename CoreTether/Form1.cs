@@ -133,7 +133,7 @@ namespace CoreTether
 
         private void tbWatchInterval_Scroll(object sender, EventArgs e)
         {
-            lblCheckFrequency.Text = $"Check Frequency (s): [{tbWatchInterval.Value}]";
+            lblCheckFrequency.Text = $"Check Frequency (Seconds): [{tbWatchInterval.Value}]";
             CheckFrequency = tbWatchInterval.Value;
         }
 
